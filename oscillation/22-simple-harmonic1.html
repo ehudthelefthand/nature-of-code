@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Simple Harmonic II</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script>
+      var
+        x, amplitude,
+        angle = 0,
+        aVel = 0,
+        aAcc = 0.0005;
+        radius = 20,
+        space = document.getElementById("canvas"),
+        context = space.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      amplitude = 200;
+
+      function draw() {
+        x = amplitude * Math.cos(angle);
+        aVel += aAcc;
+        aVel = aVel > 0.2 ? 0.2 : aVel;
+        angle += aVel;
+
+        context.clearRect(0, 0, space.width, space.height);
+        context.save();
+        context.translate(space.width /2, space.height/2);
+
+        context.beginPath();
+        context.arc(x, 0, radius, 0, 2 * Math.PI);
+        if (x > 0) {
+          context.moveTo(x - radius, 0);
+          context.lineTo(0, 0);
+        }
+        else {
+          context.lineTo(0, 0);
+        }
+        context.fillStyle = "#999";
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = "#000";
+        context.stroke();
+
+        context.restore();
+      }
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

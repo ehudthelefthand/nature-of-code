@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Space Ship</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0; background: rgb(0,0,0);"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../spaceship.js"></script>
+    <script>
+      var
+        x, y, spaceship,
+        r = 0,
+        angle = 0,
+        radius = 10,
+        keyCode = {
+          37: "LEFT",
+          39: "RIGHT",
+          32: "SPACE"
+        },
+        space = document.getElementById("canvas"),
+        context = space.getContext("2d");
+
+      window.addEventListener("keydown", function(event) {
+        if (event.keyCode === 37) {
+          spaceship.turn(0.06);
+        }
+        else if (event.keyCode === 39) {
+          spaceship.turn(-0.06);
+        }
+        else if (event.keyCode === 32) {
+          spaceship.thrust();
+        }
+      });
+
+      window.addEventListener("keyup", function(event) {
+
+      });
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      spaceship = new SpaceShip(new Vector(space.width/2, space.height/2));
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+        spaceship.update();
+        spaceship.display();
+      }
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

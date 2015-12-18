@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Everything Attract Everything</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../mover.js"></script>
+    <script src="../attractor.js"></script>
+    <script>
+      var
+        position,
+        movers = [],
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      for (var i = 0; i < 20; i++) {
+        position = new Vector(Math.random() * space.width, Math.random() * space.height);
+        movers[i] = new Mover(position, Math.random() * 15);
+      }
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+
+        for (var i = 0; i < 20; i++) {
+          for (var j = 0; j < 20; j++) {
+            if (i === j) {
+              continue;
+            }
+            var f = movers[j].attract(movers[i]);
+            movers[i].applyForce(f);
+          }
+          movers[i].update();
+          movers[i].display();
+        }
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

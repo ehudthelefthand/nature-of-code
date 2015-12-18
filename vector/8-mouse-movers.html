@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mover toward Mouse</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../mover.js"></script>
+    <script>
+      var
+        positon, acceleration, mouseX, mouseY, target, direction,
+        movers = [],
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      space.addEventListener("mousemove", function(event) {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+      });
+
+      Mover.prototype.update = function() {
+        this.velocity.add(this.acceleration);
+        this.velocity.limit(8);
+        this.position.add(this.velocity);
+      };
+
+      for (var i = 0; i < 20; i++) {
+        position = new Vector(
+          Math.floor(Math.random() * space.width),
+          Math.floor(Math.random() * space.height)
+        );
+        movers[i] = new Mover(position, 1, 32);
+      }
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+
+        for (var i = 0; i < 20; i++) {
+          target = new Vector(mouseX || 0, mouseY || 0);
+          direction = Vector.sub(target, movers[i].position);
+          direction.normalize();
+          direction.mult(0.5);
+          movers[i].acceleration = direction;
+          movers[i].update();
+          movers[i].display();
+        }
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

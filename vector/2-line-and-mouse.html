@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Line and Mouse with Vector</title>
+    <style>
+      body {
+        font-family: helvetica;
+        font-size: 12px;
+      }
+      .toggles {
+        position: fixed;
+        right: 10px;
+        z-index: 1;
+      }
+      .button {
+        display: inline-block;
+        padding: 5px;
+        color: #000;
+        border: 1px solid #000;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        background: #fff;
+      }
+      .button:hover {
+        background: #ccc;
+      }
+      .button:focus {
+        background: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <div class="toggles">
+      <a href="#simple" class="button">Simple</a>
+      <a href="#scale" class="button">Scale</a>
+      <a href="#magnitude" class="button">Magnitude</a>
+      <a href="#normalize" class="button">Normalize</a>
+    </div>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script>
+      var center, mouse, mouseX, mouseY, mag,
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      center = new Vector(space.width / 2, space.height / 2);
+
+      space.addEventListener("mousemove", function(event) {
+        mouseX = event.pageX;
+        mouseY = event.pageY;
+      });
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+
+        mouse = new Vector(mouseX, mouseY);
+        mouse.sub(center);
+
+        switch (window.location.hash) {
+          case "#scale":
+            mouse.mult(0.5);
+            break;
+          case "#magnitude":
+            mag = mouse.mag();
+            context.rect(0, 0, mag, 10);
+            context.fillStyle = "#000";
+            context.fill();
+            break;
+          case "#normalize":
+            mouse.normalize();
+            mouse.mult(50);
+            break;
+        }
+
+        context.beginPath();
+        context.moveTo(center.x, center.y);
+        context.translate(center.x, center.y);
+        context.lineTo(mouse.x, mouse.y);
+        context.translate(-center.x, -center.y);
+        context.stroke();
+
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

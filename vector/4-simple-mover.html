@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Simple Mover</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../mover.js"></script>
+    <script>
+      var
+        mover, positon, velocity,
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      position = new Vector(
+        Math.round(Math.random() * space.width),
+        Math.round(Math.random() * space.height)
+      );
+      mover = new Mover(position, 1, 32);
+      mover.checkEdges = function(width, height) {
+        if (this.position.x < 0) {
+          this.position.x = width;
+        }
+        else if (this.position.x > width) {
+          this.position.x = 0;
+        }
+
+        if (this.position.y < 0) {
+          this.position.y = height;
+        }
+        else if (this.position.y > height) {
+          this.position.y = 0;
+        }
+      };
+
+      velocity = new Vector(
+        Math.round(Math.random() * 2),
+        Math.round(Math.random() * 2)
+      );
+      mover.velocity = velocity;
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+
+        mover.update();
+        mover.display();
+        mover.checkEdges(space.width, space.height);
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

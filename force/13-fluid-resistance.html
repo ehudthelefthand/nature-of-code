@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Fluid Resistance</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../Liquid.js"></script>
+    <script src="../mover.js"></script>
+    <script>
+      var
+        position, liquid,
+        movers = [],
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      liquid = new Liquid(0, space.height / 2, space.width, space.height / 2, 0.2);
+
+      for (var i = 0; i < 20; i++) {
+        position = new Vector(Math.random() * space.width, 0);
+        movers[i] = new Mover(position, getRandomInt(1, 30));
+      }
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+        liquid.display();
+
+        for (var i = 0; i < 20; i++) {
+          if (movers[i].isInside(liquid)) {
+            movers[i].drag(liquid);
+          }
+          var m = 0.1 * movers[i].mass;
+          var gravity = new Vector(0, m);
+          movers[i].applyForce(gravity);
+
+          movers[i].update();
+          movers[i].display();
+          movers[i].checkEdges(space.width, space.height);
+        }
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

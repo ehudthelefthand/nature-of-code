@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Gravitational Attraction with Angular Motion</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../rect-mover.js"></script>
+    <script src="../attractor.js"></script>
+    <script>
+      var
+        position, attractor,
+        movers = [],
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      position = new Vector(space.width / 2, space.height / 2);
+      attractor = new Attractor(position, 20, 1.2);
+
+      for (var i = 0; i < 20; i++) {
+        position = new Vector(Math.random() * space.width, Math.random() * space.height);
+        movers[i] = new Mover(position, Math.random() * 15, 2);
+        movers[i].velocity = new Vector(Math.random(), Math.random());
+      }
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+        attractor.display();
+        for (var i = 0; i < 20; i++) {
+          var f = attractor.attract(movers[i]);
+          movers[i].applyForce(f);
+          movers[i].update();
+          movers[i].display();
+        }
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>

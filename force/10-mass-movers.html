@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mover with Mass</title>
+  </head>
+  <body>
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0;"></canvas>
+    <script src="../base.js"></script>
+    <script src="../vector.js"></script>
+    <script src="../mover.js"></script>
+    <script>
+      var
+        position,
+        movers = [],
+        space = document.getElementById("canvas"),
+        context = canvas.getContext("2d");
+
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+
+      for (var i = 0; i < 20; i++) {
+        position = new Vector(0, 0); // Create new position everytime !
+        movers[i] = new Mover(position, getRandomInt(1, 50));
+      }
+
+      function draw() {
+        context.clearRect(0, 0, space.width, space.height);
+
+        for (var i = 0; i < 20; i++) {
+          var wind = new Vector(0.05, 0);
+          var gravity = new Vector(0, 0.5);
+
+          movers[i].applyForce(wind);
+          movers[i].applyForce(gravity);
+          movers[i].update();
+          movers[i].display();
+          movers[i].checkEdges(space.width, space.height);
+        }
+      };
+
+      (function animationLoop() {
+        requestAnimationFrame(animationLoop);
+        draw();
+      })();
+    </script>
+  </body>
+</html>
